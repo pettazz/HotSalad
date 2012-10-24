@@ -1,0 +1,7 @@
+selenium==2.15.0
+MySQL_python
+pycrypto
+boto
+SOAPpy
+nose
+requests==0.8.3
