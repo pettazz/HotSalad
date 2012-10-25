@@ -16,8 +16,8 @@ APP_CREDS = {
     Apps.TESTCASE_REPOSITORY: {
         PROD: ("somedb.host.local", 
                "testdataUser", "testdataPass", "TestcaseData"),
-        QA: ("somedb.qa.host.local", 
-             "testdataUser", "testdataPass", "TestcaseData")
+        QA: ("127.0.0.1", 
+             "root", "", "TestcaseData")
     },
 
 }
