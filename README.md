@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/pettazz/HotSalad.png)](http://travis-ci.org/pettazz/HotSalad)
+
 Testing, for fun and profit
 ===========================
 
