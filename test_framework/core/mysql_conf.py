@@ -14,8 +14,8 @@ class Apps:
 
 APP_CREDS = {
     Apps.TESTCASE_REPOSITORY: {
-        PROD: ("somedb.host.local", 
-               "testdataUser", "testdataPass", "TestcaseData"),
+        PROD: ("127.0.0.1", 
+               "root", "", "TestcaseData"),
         QA: ("127.0.0.1", 
              "root", "", "TestcaseData")
     },

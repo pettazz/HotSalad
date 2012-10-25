@@ -7,6 +7,7 @@ class MockOptions():
     port = None
     log_path = "unittest_logs"
     browser = 'Silk-browser'
+    browser_version = 'latest'
 
 
 class MockTestSuite():
@@ -22,7 +23,7 @@ class MockTest():
         self.app_env = 'qaprod'
         self.user = 'nose'
         self.api_key = '1234abcd'
-        self.browser = None
+        self.browser = 'Silk-browser'
         self.driver = MockDriver()
 
     def id(self):

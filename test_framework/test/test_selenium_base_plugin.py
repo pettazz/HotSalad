@@ -16,6 +16,8 @@ class BasePluginTestCase(unittest.TestCase):
         plugin.options = MockOptions()
         plugin.options.browser = "firefox"
         test = MockTestSuite()
+        plugin.enabled = True
+        plugin.configure(plugin.options, None)
         plugin.beforeTest(test)
         self.assertEquals(plugin.driver.browser, "firefox")
     

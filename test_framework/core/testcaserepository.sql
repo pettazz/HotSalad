@@ -43,5 +43,6 @@ CREATE TABLE `testcaseRunData` (
   `retryCount` int(11) DEFAULT '0',
   `exceptionMap_guid` varchar(64) DEFAULT NULL,
   `logURL` text,
+  `message` text,
   PRIMARY KEY (`guid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
