@@ -2,8 +2,8 @@ language: python
 python:
   - 2.7
 install: 
-  - "python setup.py install"
   - "pip install -r requirements.pip --use-mirrors"
+  - "python setup.py install"
 before_script:
   - "mysql -e 'create database testcasedb;'"
   - "mysql -h 127.0.0.1 -u root testcasedb < test_framework/core/testcaserepository.sql"
