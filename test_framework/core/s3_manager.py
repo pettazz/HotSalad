@@ -15,7 +15,7 @@ class S3LoggingBucket(object):
     """
 
     def __init__(self, 
-         log_bucket = None 
+         log_bucket = None, 
          bucket_url = None,
          selenium_access_key = None,
          selenium_secret_key = None):
