@@ -50,7 +50,7 @@ class Base(Plugin):
             os.mkdir(test_logpath)
 
         #set test scope options variables here. ex:
-        test.test.some_id_thing = self.options.some_id_thing
+        #test.test.some_id_thing = self.options.some_id_thing
 
     
     def addError(self, test, err, capt=None):
