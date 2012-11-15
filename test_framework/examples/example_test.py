@@ -7,9 +7,7 @@ if sys.version_info >= (2,7):
 else:
    import unittest2 as unittest
 
-from test_framework.fixtures import constants,page_loads,page_interactions
-#all these can be imported with only one line instead:
-#from test_framework.fixtures import tools
+from test_framework.fixtures import constants
 from test_framework.fixtures import errors
 
 class ExampleTests(unittest.TestCase):
@@ -34,8 +32,25 @@ class ExampleTests(unittest.TestCase):
         loaded.
         """
         self.driver.get(self.url)
-        page_loads.wait_for_element_visible(self.driver, "img.hplogo")
-        
+        self.page_loads.wait_for_element_visible("input[name=q]")
+
+    def test_should_fail(self):
+        """
+        This test shows an example of a failure. Failures are generally
+        assertion not passing, rather than an actual code error.
+        """
+        self.driver.get(self.url)
+        page_loads.wait_for_element_visible(self.driver, "input[name=q]")
+        self.assertTrue(self.page_interactions.is_element_present("img#happyCakeTime"))
+
+    def test_should_error(self):
+        """
+        This test shows an example of an error. Errors signify that something
+        went wrong in the test code itself, not necessarily with the particular
+        item being tested.
+        """
+        self.driver.get(self.url)
+        self.page_loads.wait_for_element_visible()
 
     def test_skip_test_on_condition(self):
         """
@@ -45,7 +60,7 @@ class ExampleTests(unittest.TestCase):
         """
         self.driver.get(self.url)
         #for some reason this element's presence means we can't run our test
-        if page_interactions.is_element_present(self.driver, "body"):
+        if self.page_interactions.is_element_present("body"):
             raise errors.SkipTest("The body is here so I can't run.")
 
     def test_blocked_test(self):

@@ -10,6 +10,10 @@ from nose.plugins import Plugin
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 from test_framework.core import selenium_launcher
+from test_framework.core.locators_manager import LocatorsManager
+from test_framework.fixtures.page_interactions import PageInteractions
+from test_framework.fixtures.page_loads import PageLoads
+from test_framework.fixtures.luna_manager import LunaManager
 from test_framework.fixtures import constants
 
 class SeleniumBase(Plugin):
@@ -135,6 +139,21 @@ class SeleniumBase(Plugin):
                 print "\n\n\n"
                 os.kill(os.getpid(), 9)
 
+        # also set up the selenium helper instances
+        # locators helper
+        if(hasattr(test.test, 'locators')):
+            locators = test.test.locators
+        else:
+            locators = None
+        test.test.locators = LocatorsManager(self.driver, locators)
+
+        # page_loads helper
+        test.test.page_loads = PageLoads(self.driver)
+
+        # page_interactions helper
+        test.test.page_interactions = PageInteractions(self.driver)
+
+
     def afterTest(self, test):
         try:
             self.driver.quit()
@@ -155,3 +174,8 @@ class SeleniumBase(Plugin):
                 return webdriver.Ie()
             if browser_name == constants.Browser.GOOGLE_CHROME:
                 return webdriver.Chrome()
+            if browser_name == constants.Browser.SAFARI:
+                return webdriver.Safari()
+            else:
+                print "No recognized browser was selected!"
+                raise Exception("No recognized browser was selected!")
