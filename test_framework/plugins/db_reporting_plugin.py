@@ -86,7 +86,8 @@ class DBReporting(Plugin):
         data_payload.state = constants.State.NOTRUN
         self.testcase_manager.insert_testcase_data(data_payload)
         self.case_start_time = int(time.time() * 1000)
-        #make the testcase guid available to other plugins
+        #make the testcase and execution guids available to other plugins
+        test.execution_guid = self.execution_guid
         test.testcase_guid = self.testcase_guid
 
     def finalize(self, result):

@@ -24,7 +24,7 @@ setup(
             'screen_shots = test_framework.plugins.screen_shots:ScreenShots',
             'test_info = test_framework.plugins.basic_test_info:BasicTestInfo',
             'db_reporting = test_framework.plugins.db_reporting_plugin:DBReporting',
-            's3_logging = test_framework.plugins.s3_logging_plugin:S3Logging',
+            's3_logging = test_framework.plugins.log_upload:LogUpload',
             ]
         }
 

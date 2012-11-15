@@ -41,6 +41,17 @@ class EmailManagerAccount:
     USERNAME = 'dudebro99@gmail.com'
     PASSWORD = 'hunter2'
 
+#define default log file upload location
+class LogUploader:
+    USE_S3 = False
+    #settings defined in constants.s3ManagerAccount
+
+    USE_LOCAL = True
+    DESTINATION_PATH = '/var/www/'
+    BASE_URL = 'http://localhost/'
+
+    #USE_SSH = False
+    #fabric?
 #define the default s3 upload details
 class s3ManagerAccount:
     LOG_BUCKET = "seleniumlogs", 
