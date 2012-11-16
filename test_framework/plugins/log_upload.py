@@ -49,12 +49,8 @@ class LogUpload(Plugin):
 
         if constants.LogUploader.USE_LOCAL:
             import shutil
-
-            # if the db plugin is enabled, we have an execution guid already
-            if hasattr(test.test, "execution_guid"):
-                guid = test.test.execution_guid
-            else:
-                guid = str(uuid.uuid4().hex)
+            
+            guid = test.test.execution_guid
             path = "%s/%s" % (self.options.log_path, 
                               test.test.id())
             # only move logs if they actually exist

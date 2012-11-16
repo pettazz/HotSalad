@@ -10,6 +10,7 @@ import math
 import time
 import uuid
 import sys
+import os
 if sys.version_info >= (2,7):
    # unittest2 features are native in Python 2.7
    import unittest
@@ -36,7 +37,6 @@ class DBReporting(Plugin):
     def __init__(self):
         """initialize some variables"""
         Plugin.__init__(self)
-        self.execution_guid = str(uuid.uuid4())
         self.testcase_guid = None
         self.execution_start_time = 0
         self.case_start_time = 0
@@ -63,6 +63,7 @@ class DBReporting(Plugin):
     def begin(self):
         """At the start of the run, we want to record the 
         execution information to the database."""
+        self.execution_guid = os.environ['test_execution_guid']
         exec_payload = ExecutionQueryPayload()
         exec_payload.execution_start_time = int(time.time() * 1000)
         self.execution_start_time = exec_payload.execution_start_time

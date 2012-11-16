@@ -26,6 +26,8 @@ class Base(Plugin):
         parser.add_option('--log_path', dest='log_path',
                           default='logs/',
                           help='Where the log files are saved')
+
+        env['test_execution_guid'] = str(uuid.uuid4())
         
     def configure(self, options, conf): 
         super(Base, self).configure(options, conf) 
@@ -51,6 +53,7 @@ class Base(Plugin):
 
         #set test scope options variables here. ex:
         #test.test.some_id_thing = self.options.some_id_thing
+        test.test.execution_guid = os.environ['test_execution_guid']
 
     
     def addError(self, test, err, capt=None):
