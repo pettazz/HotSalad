@@ -62,6 +62,7 @@ class DBReportingTestCase(unittest.TestCase):
     def test_finalize(self):
         self.result = MockResult()
         self.plugin.begin()
+        time.sleep(1)
         self.plugin.finalize(self.result)
         db = self.execution_db
         self.assertTrue(db['runtime'] > 0)
