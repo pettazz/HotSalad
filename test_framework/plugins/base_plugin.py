@@ -5,6 +5,7 @@ This is a base plugin that takes in log path to start
 import os
 import shutil
 import time
+import uuid
 
 from nose.plugins import Plugin
 from nose.exc import SkipTest
