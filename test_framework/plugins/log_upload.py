@@ -67,7 +67,6 @@ class LogUpload(Plugin):
 
                 shutil.copytree(path, dest_path)
         
-                # log_files = list(set(log_files))
                 log_files.sort()
                 index_str = []
                 for logfile in log_files:
