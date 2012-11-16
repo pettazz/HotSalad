@@ -29,6 +29,7 @@ class DBReportingTestCase(unittest.TestCase):
     
     def test_start_test(self):
         self.test = MockTest()
+        self.plugin.begin()
         self.plugin.startTest(self.test)
         db = self.testcase_db
         self.assertTrue(db['state'] == "NotRun")
@@ -39,24 +40,28 @@ class DBReportingTestCase(unittest.TestCase):
 
     def test_add_success(self):
         self.test = MockTest()
+        self.plugin.begin()
         self.plugin.addSuccess(self.test, "wat")
         db = self.testcase_db
         self.assertTrue(db['state'] == "Pass")
 
     def test_add_error(self):
         self.test = MockTest()
+        self.plugin.begin()
         self.plugin.addError(self.test, "Stuff got broke")
         db = self.testcase_db
         self.assertTrue(db['state'] == "Error")
 
     def test_add_failure(self):
         self.test = MockTest()
+        self.plugin.begin()
         self.plugin.addFailure(self.test, "Stuff did not pass")
         db = self.testcase_db
         self.assertTrue(db['state'] == "Fail")
 
     def test_finalize(self):
         self.result = MockResult()
+        self.plugin.begin()
         self.plugin.finalize(self.result)
         db = self.execution_db
         self.assertTrue(db['runtime'] > 0)
