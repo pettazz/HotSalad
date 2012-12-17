@@ -16,7 +16,6 @@ if sys.version_info >= (2,7):
    import unittest
 else:
    import unittest2 as unittest
-
 from optparse import SUPPRESS_HELP
 from nose.plugins import Plugin
 from nose.exc import SkipTest
@@ -50,7 +49,7 @@ class DBReporting(Plugin):
         parser.add_option('--database_environment', action='store', 
                           dest='database_env',
                           choices=('prod', 'qa'),
-                          default='prod',
+                          default='qa',
                           help=SUPPRESS_HELP)
         
     #Plugin methods
@@ -81,12 +80,14 @@ class DBReporting(Plugin):
             data_payload.browser = test.browser
         else:
             data_payload.browser = "N/A"
+        data_payload.sauceJobID = test.sauce_job_id
         data_payload.testcaseAddress = test.id()
         data_payload.application = \
             ApplicationManager.generate_application_string(test)
         data_payload.state = constants.State.NOTRUN
+        data_payload.startTime = int(time.time() * 1000)
         self.testcase_manager.insert_testcase_data(data_payload)
-        self.case_start_time = int(time.time() * 1000)
+        self.case_start_time = int(time.time() * 1000)  #more accurate
         #make the testcase and execution guids available to other plugins
         test.execution_guid = self.execution_guid
 

@@ -36,15 +36,15 @@ class SeleniumBase(Plugin):
                           choices=constants.Browser.VERSION.keys(),
                           default=constants.Browser.FIREFOX,
                           help="""The browser to use.Note, if you want to use
-                                  chrome, you have to run the chromium driver.
+                                  Chrome, you have to install the chromedriver.
                         http://code.google.com/p/chromium/downloads/list)""")
         parser.add_option('--browser_version', action='store',
                           dest='browser_version',
                           default="latest",
                           help="""The browser version to use. Explicitly select
                           a version number or use "latest". Currently 
-                          supported are Firefox: 3.6, 4, 8, Chrome latest,
-                          Safari latest, Internet Explorer: 7, 8, 9. If a 
+                          supported are Firefox latest, Chrome latest, and
+                          Internet Explorer 8 and 9. If a 
                           version is not specified, one will be selected from 
                           the currently available servers.""")
         parser.add_option('--server', action='store', dest='servername',
@@ -64,9 +64,6 @@ class SeleniumBase(Plugin):
         self.browser_settings = {
             "browserName": options.browser   
         }
-        if options.browser == constants.Browser.INTERNET_EXPLORER:
-            self.browser_settings["platform"] = "WINDOWS"
-            self.browser_settings["browserName"] = "internet explorer"
         
         if options.browser_version == 'latest':
             version = constants.Browser.LATEST[options.browser]
@@ -77,8 +74,28 @@ class SeleniumBase(Plugin):
             if (version_options is not None and 
                 options.browser_version in version_options):
                 self.browser_settings["version"] = options.browser_version
+
+        # browser-specific capabilities settings:
+        # ie
+        if options.browser == constants.Browser.INTERNET_EXPLORER:
+            if options.browser_version == 'latest' or options.browser_version == '9':
+                self.browser_settings["platform"] = "Windows 2008"
+            else:
+                self.browser_settings["platform"] = "WINDOWS"
+                self.browser_settings["selenium-version"] = "2.27.0"
+            self.browser_settings["browserName"] = "internet explorer"
+
+        # ipad
+        if options.browser == constants.Browser.IPAD:
+            self.browser_settings["platform"] = 'Mac 10.8'
                 
         self.options = options
+
+        # chrome
+        #  kind of a hack for sauce 
+        if options.browser == constants.Browser.GOOGLE_CHROME:
+            self.browser_settings["version"] = ''
+
 
         if (self.options.servername == "localhost" and
             self.options.browser == constants.Browser.HTML_UNIT):
@@ -99,6 +116,12 @@ class SeleniumBase(Plugin):
         """ Running Selenium locally will be handled differently
             from how Jenkins runs Selenium remotely.
             More changes may be needed in the future. """
+        self.browser_settings['name'] = test.test.id()
+        self.browser_settings['custom-data'] = {
+            'execution_guid': test.test.execution_guid,
+            'testcase_guid': test.test.testcase_guid
+        }
+
         if self.options.servername == "localhost":
             try:
                 self.driver = self.__select_browser(self.options.browser)
@@ -128,6 +151,7 @@ class SeleniumBase(Plugin):
                 except Exception as err:
                     #nose swallows beforeTest exceptions, so this is the only way
                     #to get the word out when stuff breaks here.
+                    print err
                     print "Attempt #%s to connect to Selenium failed" % i
                     if i < 3:
                         print "Retrying in 15 seconds..."
@@ -137,6 +161,17 @@ class SeleniumBase(Plugin):
                 print err
                 print "\n\n\n"
                 os.kill(os.getpid(), 9)
+
+        # sauce hax
+        if not self.options.browser in (constants.Browser.INTERNET_EXPLORER, constants.Browser.GOOGLE_CHROME):
+            self.driver.maximize_window()
+
+        # get sauce id if we're using it
+        if(hasattr(self.driver, 'session_id') and '-' not in self.driver.session_id):
+            # checking for - is so janky but it works
+            test.test.sauce_job_id = self.driver.session_id
+        else:
+            test.test.sauce_job_id = None
 
         # also set up the selenium helper instances
         # locators helper

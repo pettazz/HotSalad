@@ -7,6 +7,8 @@ Log Upload plugin to upload all logs to a custom server or S3 bucket.
 import uuid
 import logging
 import os
+import hmac
+from hashlib import md5
 
 from test_framework.fixtures import constants
 from nose.plugins import Plugin
@@ -49,7 +51,7 @@ class LogUpload(Plugin):
 
         if constants.LogUploader.USE_LOCAL:
             import shutil
-            
+
             guid = test.test.execution_guid
             path = "%s/%s" % (self.options.log_path, 
                               test.test.id())
@@ -67,6 +69,13 @@ class LogUpload(Plugin):
                 index_str = []
                 for logfile in log_files:
                     index_str.append('<a href="%s">%s</a>' % (logfile, logfile))
+
+                # also add a link to the Sauce job if there was one
+                sauce_id = test.test.sauce_job_id
+                if sauce_id is not None:
+                    token = hmac.new("%s:%s" % (constants.Sauce.USER, constants.Sauce.ACCESS_KEY), sauce_id, md5).hexdigest()
+                    sauce_url = "https://saucelabs.com/jobs/%s?auth=%s" % (sauce_id, token)
+                    index_str.append('<a href="%s">Sauce Job Results</a>' % sauce_url)
                 index = open(dest_path + 'index.html', 'w')
                 index.write("<br>".join(index_str))
 

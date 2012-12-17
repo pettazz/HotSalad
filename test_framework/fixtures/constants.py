@@ -6,29 +6,38 @@ class Environment:
     PRODUCTION = "production"
     LOCAL = "local"
 
+class Sauce:
+    USER = 'sauce_user'
+    ACCESS_KEY = 'some-key-stuff'
+
 class Browser:
     FIREFOX = "firefox"
     INTERNET_EXPLORER = "ie"
     SAFARI = "safari"
     GOOGLE_CHROME = "chrome"
+    IPAD = "iPad"
     HTML_UNIT = "htmlunit"
 
     VERSION = {
-        "firefox" : ["9", "3.6"],
+        "firefox" : ["16"],
         "ie" : ["8", "9"],
-        "chrome" : None,
+        "safari": ["6"],
+        "chrome" : ["23"],
+        "iPad" : ["5.1", "6"],
         "htmlunit" : None
     }
 
     LATEST = {
-        "firefox": "9",
+        "firefox": "16",
         "ie": "9",
-        "chrome": None,
+        "safari": "6",
+        "chrome": "23",
+        "iPad": "6",
         "htmlunit": None
     }
 
 class State:
-    NOTRUN = "NotRun"
+    NOTRUN = "Incomplete"
     ERROR = "Error"
     FAILURE = "Fail"
     PASS = "Pass"

@@ -42,6 +42,7 @@ CREATE TABLE `testcaseRunData` (
   `stackTrace` text,
   `retryCount` int(11) DEFAULT '0',
   `exceptionMap_guid` varchar(64) DEFAULT NULL,
+  `sauceJobID` varchar(64) DEFAULT NULL,
   `logURL` text,
   `message` text,
   PRIMARY KEY (`guid`)

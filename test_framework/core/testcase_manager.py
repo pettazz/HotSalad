@@ -40,7 +40,7 @@ class TestcaseManager:
         
         query = """INSERT INTO testcaseRunData 
                               (guid, browser, state, execution_guid, application, 
-                              testcaseAddress, runtime, retryCount, message, stackTrace) 
+                              testcaseAddress, runtime, retryCount, message, stackTrace, startTime, sauceJobID) 
                           VALUES (
                               %(guid)s,
                               %(browser)s,
@@ -51,7 +51,9 @@ class TestcaseManager:
                               %(runtime)s,
                               %(retryCount)s,
                               %(message)s,
-                              %(stackTrace)s) """
+                              %(stackTrace)s,
+                              %(startTime)s,
+                              %(sauceJobID)s) """
         DatabaseManager(self.database_env).execute_query_and_close(query, testcase_run_payload.get_params())
     
     def update_testcase_data(self, testcase_payload):
@@ -106,7 +108,9 @@ class TestcaseDataPayload:
         self.retry_count = 0
         self.stack_trace = None
         self.message = None
+        self.sauceJobID = None
         self.logURL = None
+        self.startTime = 0
 
     def get_params(self):
         """Returns a params object"""
@@ -121,7 +125,9 @@ class TestcaseDataPayload:
             "retryCount": self.retry_count,
             "stackTrace": self.stack_trace,
             "message": self.message,
-            "logURL": self.logURL
+            "sauceJobID": self.sauceJobID,
+            "logURL": self.logURL,
+            "startTime": self.startTime
         }
 
     
