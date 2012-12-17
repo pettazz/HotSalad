@@ -74,7 +74,7 @@ class DBReporting(Plugin):
     def startTest(self, test):
         """at the start of the test, set the test case details"""
         data_payload = TestcaseDataPayload()
-        self.testcase_guid = str(uuid.uuid4())
+        self.testcase_guid = test.testcase_guid
         data_payload.guid = self.testcase_guid
         data_payload.execution_guid = self.execution_guid
         if hasattr(test, "browser"):
@@ -89,7 +89,6 @@ class DBReporting(Plugin):
         self.case_start_time = int(time.time() * 1000)
         #make the testcase and execution guids available to other plugins
         test.execution_guid = self.execution_guid
-        test.testcase_guid = self.testcase_guid
 
     def finalize(self, result):
         """At the end of the run, we want to 

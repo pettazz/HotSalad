@@ -11,8 +11,8 @@ from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 from test_framework.core import selenium_launcher
 from test_framework.core.locators_manager import LocatorsManager
-from test_framework.fixtures.page_interactions import PageInteractions
-from test_framework.fixtures.page_loads import PageLoads
+from test_framework.core.page_interactions import PageInteractions
+from test_framework.core.page_loads import PageLoads
 from test_framework.fixtures import constants
 
 class SeleniumBase(Plugin):

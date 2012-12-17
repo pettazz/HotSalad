@@ -3,9 +3,9 @@ This is a base plugin that takes in log path to start
 """
 
 import os
+import uuid
 import shutil
 import time
-import uuid
 
 from nose.plugins import Plugin
 from nose.exc import SkipTest
@@ -27,6 +27,15 @@ class Base(Plugin):
         parser.add_option('--log_path', dest='log_path',
                           default='logs/',
                           help='Where the log files are saved')
+        parser.add_option('--environment', dest='environment',
+                          choices=(
+                            constants.Environment.PRODUCTION,
+                            constants.Environment.STAGING,
+                            constants.Environment.QA,
+                            constants.Environment.LOCAL
+                          ),
+                          default=constants.Environment.QA,
+                          help='The environment to run tests on')
 
         env['test_execution_guid'] = str(uuid.uuid4())
         
@@ -52,8 +61,11 @@ class Base(Plugin):
         if not os.path.exists(test_logpath):
             os.mkdir(test_logpath)
 
+        test.test.environment = self.options.environment
+
         #set test scope options variables here. ex:
         #test.test.some_id_thing = self.options.some_id_thing
+        test.test.testcase_guid = str(uuid.uuid4())
         test.test.execution_guid = os.environ['test_execution_guid']
 
     
