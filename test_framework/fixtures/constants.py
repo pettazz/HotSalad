@@ -5,6 +5,7 @@ class Environment:
     QA = "qa"
     PRODUCTION = "production"
     LOCAL = "local"
+    STAGING = "staging"
 
 class Sauce:
     USER = 'sauce_user'
