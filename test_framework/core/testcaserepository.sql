@@ -11,23 +11,25 @@ CREATE TABLE `delayedTestData` (
   UNIQUE KEY `uuid` (`guid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-# table exceptionMap
+# table exception
 # -----------------------------------
-CREATE TABLE `exceptionMap` (
+CREATE TABLE `exception` (
   `guid` varchar(64) NOT NULL DEFAULT '',
+  `hash` varchar(64) NOT NULL DEFAULT '',
+  `text` text,
   `jiraIssue` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`guid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 # table execution
 # -----------------------------------
 CREATE TABLE `execution` (
   `guid` varchar(64) NOT NULL DEFAULT '',
-  `totalExecutionTime` int(11),
+  `totalExecutionTime` int(11) DEFAULT NULL,
   `username` varchar(255) DEFAULT NULL,
   `executionStart` bigint(20) DEFAULT '0',
   PRIMARY KEY (`guid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 # table testcaseRunData
 # -----------------------------------
@@ -36,14 +38,15 @@ CREATE TABLE `testcaseRunData` (
   `testcaseAddress` varchar(1024) DEFAULT NULL,
   `application` varchar(1024) DEFAULT NULL,
   `execution_guid` varchar(64) DEFAULT NULL,
-  `runtime` int(11),
+  `runtime` int(11) DEFAULT NULL,
   `state` varchar(255) DEFAULT NULL,
   `browser` varchar(255) DEFAULT NULL,
-  `stackTrace` text,
   `retryCount` int(11) DEFAULT '0',
-  `exceptionMap_guid` varchar(64) DEFAULT NULL,
-  `sauceJobID` varchar(64) DEFAULT NULL,
+  `exception_guid` varchar(64) DEFAULT NULL,
+  `environment` varchar(32) DEFAULT '',
   `logURL` text,
+  `sauceJobID` varchar(64) DEFAULT NULL,
   `message` text,
+  `startTime` bigint(15) DEFAULT '0',
   PRIMARY KEY (`guid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

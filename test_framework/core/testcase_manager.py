@@ -8,7 +8,7 @@ from test_framework.core.mysql import DatabaseManager
 
 class TestcaseManager:
     """
-    Helper for Tescase related DB stuff
+    Helper for Testcase related DB stuff
     """
 
     def __init__(self, database_env):
@@ -40,7 +40,7 @@ class TestcaseManager:
         
         query = """INSERT INTO testcaseRunData 
                               (guid, browser, state, execution_guid, application, 
-                              testcaseAddress, runtime, retryCount, message, stackTrace, startTime, sauceJobID) 
+                              testcaseAddress, runtime, environment, retryCount, exception_guid, message, startTime, sauceJobID) 
                           VALUES (
                               %(guid)s,
                               %(browser)s,
@@ -49,9 +49,10 @@ class TestcaseManager:
                               %(application)s,
                               %(testcaseAddress)s,
                               %(runtime)s,
+                              %(environment)s,
                               %(retryCount)s,
+                              %(exception_guid)s,
                               %(message)s,
-                              %(stackTrace)s,
                               %(startTime)s,
                               %(sauceJobID)s) """
         DatabaseManager(self.database_env).execute_query_and_close(query, testcase_run_payload.get_params())
@@ -63,7 +64,7 @@ class TestcaseManager:
                           runtime=%(runtime)s,
                           state=%(state)s,
                           retryCount=%(retryCount)s,
-                          stackTrace=%(stackTrace)s,
+                          exception_guid=%(exception_guid)s,
                           message=%(message)s
                           WHERE guid=%(guid)s """
         DatabaseManager(self.database_env).execute_query_and_close(query, testcase_payload.get_params())
@@ -106,8 +107,9 @@ class TestcaseDataPayload:
         self.application = None
         self.runtime = None
         self.retry_count = 0
-        self.stack_trace = None
+        self.environment = None
         self.message = None
+        self.exception_guid = None
         self.sauceJobID = None
         self.logURL = None
         self.startTime = 0
@@ -123,7 +125,8 @@ class TestcaseDataPayload:
             "application": self.application,
             "runtime": self.runtime,
             "retryCount": self.retry_count,
-            "stackTrace": self.stack_trace,
+            "environment": self.environment,
+            "exception_guid": self.exception_guid,
             "message": self.message,
             "sauceJobID": self.sauceJobID,
             "logURL": self.logURL,
