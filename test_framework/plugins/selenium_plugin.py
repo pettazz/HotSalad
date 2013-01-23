@@ -4,7 +4,8 @@ a test will need.  It also provides a webdriver object for the tests to use.
 """
 
 import time
-import os
+import os, sys
+import traceback, codecs
 
 from nose.plugins import Plugin
 from selenium import webdriver
@@ -14,6 +15,7 @@ from test_framework.core.locators_manager import LocatorsManager
 from test_framework.core.page_interactions import PageInteractions
 from test_framework.core.page_loads import PageLoads
 from test_framework.fixtures import constants
+
 
 class SeleniumBase(Plugin):
     """
@@ -27,6 +29,9 @@ class SeleniumBase(Plugin):
 
     """
     name = 'selenium'
+    
+    # sources to use in logging for errors and failures
+    log_sources = ['validation_pane', 'javascript_console']
 
     def options(self, parser, env):
         super(SeleniumBase, self).options(parser, env=env)
@@ -193,6 +198,42 @@ class SeleniumBase(Plugin):
             self.driver.quit()
         except:
             print "No driver to quit."
+
+    def addError(self, test, err, capt=None):
+        self.__gather_errors(test)
+
+    def addFailure(self, test, err, capt=None, tbinfo=None):
+        self.__gather_errors(test)
+
+    def __gather_errors(self, test):
+        gathered_logs = {}
+
+        # get the logs
+        for source in self.log_sources:
+            try:
+                gathered_logs[source] = getattr(self, source + "_gather")(test)
+            except:
+                exc_type, exc_value, exc_tb = sys.exc_info()
+                gathered_logs[source] = [
+                    "Logging could not be retrieved for this source.", 
+                    "Traceback: " + ''.join(traceback.format_exception(exc_type, exc_value, exc_tb))
+                ]
+
+        # write all the log files
+        for log_type in gathered_logs:
+            logfile_name = log_type + ".log"
+            test_logpath = self.options.log_path + "/" + test.id()
+            file_name = "%s/%s" % (test_logpath, logfile_name)
+            file_handle = codecs.open(file_name, "w", "utf-8")
+            file_handle.writelines("\r\n".join(gathered_logs[log_type]))
+            file_handle.close()
+
+    def javascript_console_gather(self, test):
+        return ["Not implemented yet."]
+
+    # example of a log gathering method
+    # def example_data_gather(self, test):
+    #     return test.some_helper.get_validation_error_messages()
 
     def __select_browser(self, browser_name):
         if (self.options.servername != "localhost" or
