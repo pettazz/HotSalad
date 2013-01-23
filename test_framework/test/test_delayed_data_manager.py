@@ -3,7 +3,7 @@ import time
 import unittest
 import uuid
 
-from test_framework.fixtures.delayed_data_manager import DelayedTestStorage, DelayedTestAssistant
+from test_framework.core.delayed_data_manager import DelayedTestStorage, DelayedTestAssistant
 
 class UnitTests(unittest.TestCase):
 

@@ -25,6 +25,8 @@ class MockTest():
         self.api_key = '1234abcd'
         self.browser = 'Silk-browser'
         self.driver = MockDriver()
+        self.testcase_guid = 'rofltestcase'
+        self.execution_guid = 'roflexecution'
 
     def id(self):
         return "test"
