@@ -32,7 +32,7 @@ class DBReportingTestCase(unittest.TestCase):
         self.plugin.begin()
         self.plugin.startTest(self.test)
         db = self.testcase_db
-        self.assertTrue(db['state'] == "NotRun")
+        self.assertTrue(db['state'] == "Incomplete")
         self.assertTrue(db['application'] == "nosetests.nose.1234abcd")
         self.assertTrue(db['testcaseAddress'] == "test")
         self.assertTrue(db['browser'] == "Silk-browser")
