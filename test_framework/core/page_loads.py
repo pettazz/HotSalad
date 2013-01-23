@@ -2,7 +2,9 @@
 This module contains a set of methods that can be used for loading pages and
 waiting for elements to come in.
 
-The default option we use to search for elements is CSS Selector.
+Locators can be Locator instances or specific webdriver "find_element" selectors.
+
+The default option we use to search for elements using selectors is CSS_SELECTOR.
 This can be changed by setting the by paramter.  The enum class for options is:
 from selenium.webdriver.common.by import By
 
@@ -20,9 +22,10 @@ By.PARTIAL_LINK_TEXT
 """
 import time
 
+from test_framework.core.locators_manager import Locator
+
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.errorhandler import ElementNotVisibleException
-from selenium.webdriver.remote.errorhandler import NoSuchElementException
 
 class PageLoads:
     def __init__(self, webdriver):
@@ -36,24 +39,24 @@ class PageLoads:
         invisible.  Raises an exception if the element does not appear in the
         specified timeout.
         @Params
-        selector - the locator that is used (required)
-        by - the method to search for hte locator (Default- By.CSS_SELECTOR)
+        selector - the locator that is used, can be either a Locator instance or a
+                    webdriver find value (required)
+        by - the method to search for the locator, unused when selector is a
+                    Locator instance (Default- By.CSS_SELECTOR)
         timeout - the time to wait for the element in seconds (Default- 30 seconds)
 
         @returns
         A web element object
         """
 
-        element = None
-        for x in range(timeout):
-            try:
-                element = self.driver.find_element(by=by, value=selector)
-                return element
-            except Exception:
-                time.sleep(1)
-        if not element:
-            raise NoSuchElementException("Element %s was not present in %s" %
-                                         (selector, timeout))
+        if isinstance(selector, Locator):
+            wait_function = lambda driver : selector.find()
+        else:
+            wait_function = lambda driver : driver.find_element(by=by, value=selector)
+
+        return WebDriverWait(self.driver, timeout).until(wait_function,
+            "Element %s was not present in %s seconds" % (selector, timeout))
+            
 
     def wait_for_element_visible(self, selector,
                                  by=By.CSS_SELECTOR, timeout=30):
@@ -63,105 +66,97 @@ class PageLoads:
         Raises an exception if the element does not appear in the
         specified timeout.
         @Params
-        selector - the locator that is used (required)
-        by - the method to search for hte locator (Default- By.CSS_SELECTOR)
+        selector - the locator that is used, can be either a Locator instance or a
+                    webdriver find value (required)
+        by - the method to search for the locator, unused when selector is a
+                    Locator instance (Default- By.CSS_SELECTOR)
         timeout - the time to wait for the element in seconds (Default- 30 seconds)
 
         @returns
         A web element object
         """
 
-        element = None
-        for x in range(timeout):
-            try:
-                element = self.driver.find_element(by=by, value=selector)
-                if element.is_displayed():
-                    return element
-                else:
-                    element = None
-                time.sleep(1)
-            except Exception:
-                time.sleep(1)
-        if not element:
-            raise ElementNotVisibleException("Element %s was not present in %s"\
-                                             % (selector, timeout))
+        if isinstance(selector, Locator):
+            wait_function = lambda driver : (selector.find_one() and 
+                                             selector.find_one().is_displayed())
+        else:
+            wait_function = lambda driver : driver.find_element(by=by, value=selector).is_displayed()
+
+        return WebDriverWait(self.driver, timeout).until(wait_function,
+            "Element %s was not present in %s seconds" % (selector, timeout))
 
     def wait_for_text_visible(self, text, selector,
                               by=By.CSS_SELECTOR, timeout=30):
         """
         Searches for the specified element by the given selector. Returns the 
         element object if the text is present in the element and visible 
-        on the page. Raises an exception if the text or element do not appear 
+        on the page. Raises an exception if the text or element does not appear 
         in the specified timeout.
         @Params
         text - the text that is being searched for in the element (required)
-        selector - the locator that is used (required)
-        by - the method to search for hte locator (Default- By.CSS_SELECTOR)
+        selector - the locator that is used, can be either a Locator instance or a
+                    webdriver find value (required)
+        by - the method to search for the locator, unused when selector is a
+                    Locator instance (Default- By.CSS_SELECTOR)
         timeout - the time to wait for the element in seconds (Default- 30 seconds)
 
         @returns
         A web element object that contains the text searched for
         """
 
-        element = None
-        for x in range(timeout):
-            try:
-                element = self.driver.find_element(by=by, value=selector)
-                if element.is_displayed():
-                    if text in element.text:
-                        return element
-                    else:
-                        element = None
-                time.sleep(1)
-            except Exception:
-                time.sleep(1)
-        if not element:
-            raise ElementNotVisibleException("Element %s was not present in %s"\
-                                             % (selector, timeout))
+        if isinstance(selector, Locator):
+            wait_function = lambda driver : (selector.find_one() and 
+                                             selector.find_one().is_displayed() and 
+                                             text in selector.find_one().text)
+        else:
+            
+            wait_function = lambda driver : (driver.find_element(by=by, value=selector).is_displayed() and 
+                                             text in driver.find_element(by=by, value=selector).text)
+
+        return WebDriverWait(self.driver, timeout).until(wait_function, 
+            "Text %s was not found in %s seconds" % (text, timeout))
 
     def wait_for_element_absent(self, selector,
                                  by=By.CSS_SELECTOR, timeout=30):
         """
-        Searches for the specified element by the given selector. Returns void when
+        Searches for the specified element by the given locator. Returns None when
         element is no longer present on the page. Raises an exception if the 
         element does still exist after the specified timeout.
         @Params
-        selector - the locator that is used (required)
-        by - the method to search for hte locator (Default- By.CSS_SELECTOR)
+        selector - the locator that is used, can be either a Locator instance or a
+                    webdriver find value (required)
+        by - the method to search for the locator, unused when selector is a
+                    Locator instance (Default- By.CSS_SELECTOR)
         timeout - the time to wait for the element in seconds (Default- 30 seconds)
         """
 
-        for x in range(timeout + 1):
-            try:
-                self.driver.find_element(by=by, value=selector)
-                time.sleep(1)
-            except Exception:
-                return
-        raise Exception("Element %s was still present after %s" %
-                        (selector, timeout))
+        if isinstance(selector, Locator):
+            wait_function = lambda driver : (not selector.find_one())
+        else:
+            wait_function = lambda driver : (not driver.find_element(by=by, value=selector))
+
+        return WebDriverWait(self.driver, timeout).until(wait_function, 
+            "Element %s was still present after %s seconds" % (selector, timeout))                    
 
     def wait_for_element_not_visible(self, selector,
                                  by=By.CSS_SELECTOR, timeout=30):
         """
-        Searches for the specified element by the given selector. Returns void when
+        Searches for the specified element by the given locator. Returns None when
         element is no longer visible on the page (or if the element is not 
         present). Raises an exception if the element is still visible after the 
         specified timeout.
         @Params
-        selector - the locator that is used (required)
-        by - the method to search for hte locator (Default- By.CSS_SELECTOR)
+        selector - the locator that is used, can be either a Locator instance or a
+                    webdriver find value (required)
+        by - the method to search for the locator, unused when selector is a
+                    Locator instance (Default- By.CSS_SELECTOR)
         timeout - the time to wait for the element in seconds (Default - 30 seconds)
         """
 
-        for x in range(timeout + 1):
-            try:
-                element = self.driver.find_element(by=by, value=selector)
-                if element.is_displayed():
-                    time.sleep(1)
-                else:
-                    return
-                time.sleep(1)
-            except Exception:
-                return
-        raise Exception("Element %s was still present after %s"\
-                                         % (selector, timeout))
+        if isinstance(selector, Locator):        
+            wait_function = lambda driver : (selector.find_one() and selector.find_one().is_displayed())
+        else:
+            wait_function = lambda driver : (driver.find_element(by=by, value=selector).is_displayed())
+
+        return WebDriverWait(self.driver, timeout).until_not(wait_function, 
+            "Element %s was still present after %s seconds" % (selector, timeout))
