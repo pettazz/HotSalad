@@ -62,7 +62,8 @@ class SeleniumBase(Plugin):
         #determine the browser version to use and create our own 
         #DesiredCapabilities dict
         self.browser_settings = {
-            "browserName": options.browser   
+            "browserName": options.browser,
+            "selenium-version": '2.28.0'
         }
         
         if options.browser_version == 'latest':
@@ -82,7 +83,6 @@ class SeleniumBase(Plugin):
                 self.browser_settings["platform"] = "Windows 2008"
             else:
                 self.browser_settings["platform"] = "WINDOWS"
-                self.browser_settings["selenium-version"] = "2.27.0"
             self.browser_settings["browserName"] = "internet explorer"
 
         # ipad
