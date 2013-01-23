@@ -13,6 +13,11 @@ from test_framework.fixtures import errors
 class ExampleTests(unittest.TestCase):
     app_name = "Example Test"
 
+    locators = {
+        'google_search_input': "input[name=q]",
+        'nonexistent_image': "img#happyCakeTime"
+    }
+
     def setUp(self):
         """
         Perform basic tasks that need to be done before each test is run.
@@ -32,7 +37,8 @@ class ExampleTests(unittest.TestCase):
         loaded.
         """
         self.driver.get(self.url)
-        self.page_loads.wait_for_element_visible("input[name=q]")
+        self.page_loads.wait_for_element_visible(self.locators.google_search_input)
+        self.locators.google_search_input.find_one().send_keys('HA HA I AM GOOGOLING!')
 
     def test_should_fail(self):
         """
@@ -40,8 +46,8 @@ class ExampleTests(unittest.TestCase):
         assertion not passing, rather than an actual code error.
         """
         self.driver.get(self.url)
-        page_loads.wait_for_element_visible(self.driver, "input[name=q]")
-        self.assertTrue(self.page_interactions.is_element_present("img#happyCakeTime"))
+        page_loads.wait_for_element_visible(self.locators.google_search_input)
+        self.assertTrue(self.locators.nonexistent_image.is_visible())
 
     def test_should_error(self):
         """
