@@ -27,6 +27,7 @@ class MockTest():
         self.driver = MockDriver()
         self.testcase_guid = 'rofltestcase'
         self.execution_guid = 'roflexecution'
+        self.sauce_job_id = '8'
 
     def id(self):
         return "test"

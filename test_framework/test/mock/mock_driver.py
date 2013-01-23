@@ -11,6 +11,9 @@ class Firefox():
     def quit(self):
         print "Horray, we quitted"
 
+    def maximize_window(self):
+        print "DAYUM, DIS A BIG WINDOW"
+
 class Remote():
 
     def __init__(self, arg1, arg2):
