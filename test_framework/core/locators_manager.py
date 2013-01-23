@@ -17,7 +17,7 @@ class Locator:
     def find_one(self):
         results = self.driver.find_elements(getattr(By, self.by), self.locator)
         if len(results) == 0:
-            raise NoSuchElementException
+            raise NoSuchElementException('Locator `%s` (%s) not found.' % (self.key_name, self.locator))
         return results[0]
 
 
