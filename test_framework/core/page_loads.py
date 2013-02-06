@@ -153,10 +153,19 @@ class PageLoads:
         timeout - the time to wait for the element in seconds (Default - 30 seconds)
         """
 
-        if isinstance(selector, Locator):        
-            wait_function = lambda driver : (selector.find_one() and selector.find_one().is_displayed())
-        else:
-            wait_function = lambda driver : (driver.find_element(by=by, value=selector).is_displayed())
+        def wait_function(driver):
+            if isinstance(selector, Locator):        
+                try:
+                    exp = (selector.find_one() and selector.find_one().is_displayed())
+                except:
+                    exp = False
+                return exp
+            else:
+                try:
+                    exp = (driver.find_element(by=by, value=selector).is_displayed())
+                except:
+                    exp = False
+                return exp
 
         return WebDriverWait(self.driver, timeout).until_not(wait_function, 
             "Element %s was still present after %s seconds" % (selector, timeout))
