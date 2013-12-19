@@ -8,6 +8,7 @@ import unittest
 from mock.mock_objects import *
 from test_framework.plugins import basic_test_info
 
+
 class BasicTestInfoTest(unittest.TestCase):
     """
     This test uses the mock objects above to
@@ -25,15 +26,15 @@ class BasicTestInfoTest(unittest.TestCase):
         mock_file_name = 'basic_test_info.log'
         ex = type = details = traceb = None
         try:
-            raise Exception ("This is an Error!")
+            raise Exception("This is an Error!")
         except Exception as ex:
-            type, details, traceb = sys.exc_info()  
+            type, details, traceb = sys.exc_info()
             plugins.addError(mock.test, sys.exc_info())
         self.assertTrue(ex, "Intentional exception was not raised!")
 
         file_list = os.listdir("unittest_logs/test")
-        self.assertTrue(mock_file_name in file_list,
-                        "Expected file (%s) not present!" % mock_file_name)
+        self.assertTrue(
+            mock_file_name in file_list, "Expected file (%s) not present!" % mock_file_name)
         file_info = open("unittest_logs/test/" + mock_file_name, "r")
         contents = file_info.read()
         self.assertTrue(MockDriver.current_url in contents,
